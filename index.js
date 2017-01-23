@@ -25,26 +25,46 @@ Game.prototype.startGame = function() {
   
 }
 
+Game.prototype.moveIsValid = function(x, y) {
+  var validMove = this.board[x][y] === '__' ? true : false;
+  return validMove
+}
+
 Game.prototype.playerAction = function(coordinate, bool) {
-  
+  let x = parseInt(coordinate.split(',')[0]) - 1;
+  let y = parseInt(coordinate.split(',')[1]) - 1;
+  console.log('COORDINATE CHOSEN: ', coordinate);
+
   // if bool is true, it's player 1's turn
   if (bool) {
-    console.log('PLAYER 1 COORDINATE CHOSEN: ', coordinate)
-    let x = parseInt(coordinate.split(',')[0]);
-    let y = parseInt(coordinate.split(',')[1]);
-    this.board[x - 1][y - 1] = 'X';
+    if (this.moveIsValid(x, y)) {
+      this.board[x][y] = 'X';
+    } else {
+      console.log('That move is invalid. Try again.');
+
+    }
+    
     this.showBoard();
+
+    // get player two's action
     console.log('PLAYER 2\'s TURN NOW');
+    prompt.get(['coordinate'], function(err, result) {
+      this.playerAction(result.coordinate, false)
+    }.bind(this));
   } else {  // if bool is false, it's player 2's turn
-    console.log('PLAYER 2 COORDINATE CHOSEN: ', coordinate)
-    let x = parseInt(coordinate.split(',')[0]);
-    let y = parseInt(coordinate.split(',')[1]);
     this.board[x][y] = 'O';  
     this.showBoard();
+
+    //get player one's action
     console.log('PLAYER 1\'s TURN NOW');
+    prompt.get(['coordinate'], function(err, result) {
+      this.playerAction(result.coordinate, true)
+    }.bind(this));   
   }
   
 }
+
+
 
 
 var myGame = new Game();
